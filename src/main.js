@@ -3,27 +3,23 @@ import { createApp, h } from 'vue'
 import App from './App.vue'
 import singleSpaVue from 'single-spa-vue'
 
-// createApp(App).mount('#app')
+const appOptions = {
+  el: "#micro-app",
+  render: () => h(App),
+}
 
+// 判断当前页面使用singleSpa应用,不是就渲染
+if (!window.singleSpaNavigate) {
+  delete appOptions.el;
+  createApp(App).mount("#app");
+}
+
+// singleSpaVue包装一个vue微前端服务对象
 const vueLifecycles = singleSpaVue({
   createApp,
-  appOptions: {
-    render() {
-      return h(App, {
-        props: {
-          // single-spa props are available on the "this" object. Forward them to your component as needed.
-          // https://single-spa.js.org/docs/building-applications#lifecyle-props
-          name: this.name,
-          mountParcel: this.mountParcel,
-          singleSpa: this.singleSpa,
-        },
-      });
-    },
-  },
-  handleInstance: (app) => {
-    // app.use(router);
-  }
+  appOptions
 });
-export const bootstrap = vueLifecycles.bootstrap;
-export const mount = vueLifecycles.mount;
-export const unmount = vueLifecycles.unmount;
+
+export const bootstrap = vueLifecycles.bootstrap; // 启动时
+export const mount = vueLifecycles.mount; // 挂载时
+export const unmount = vueLifecycles.unmount; // 卸载时
