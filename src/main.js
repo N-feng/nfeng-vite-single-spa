@@ -4,7 +4,7 @@ import App from './App.vue'
 import singleSpaVue from 'single-spa-vue'
 
 const appOptions = {
-  el: "#micro-app",
+  // el: "#vite-app",
   render: () => h(App),
 }
 
